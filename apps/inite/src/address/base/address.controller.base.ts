@@ -22,11 +22,10 @@ import { AddressService } from "../address.service";
 import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { AddressCreateInput } from "./AddressCreateInput";
-import { AddressWhereInput } from "./AddressWhereInput";
-import { AddressWhereUniqueInput } from "./AddressWhereUniqueInput";
-import { AddressFindManyArgs } from "./AddressFindManyArgs";
-import { AddressUpdateInput } from "./AddressUpdateInput";
 import { Address } from "./Address";
+import { AddressFindManyArgs } from "./AddressFindManyArgs";
+import { AddressWhereUniqueInput } from "./AddressWhereUniqueInput";
+import { AddressUpdateInput } from "./AddressUpdateInput";
 import { CustomerFindManyArgs } from "../../customer/base/CustomerFindManyArgs";
 import { Customer } from "../../customer/base/Customer";
 import { CustomerWhereUniqueInput } from "../../customer/base/CustomerWhereUniqueInput";
@@ -49,8 +48,10 @@ export class AddressControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async create(@common.Body() data: AddressCreateInput): Promise<Address> {
-    return await this.service.create({
+  async createAddress(
+    @common.Body() data: AddressCreateInput
+  ): Promise<Address> {
+    return await this.service.createAddress({
       data: data,
       select: {
         address_1: true,
@@ -77,9 +78,9 @@ export class AddressControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async findMany(@common.Req() request: Request): Promise<Address[]> {
+  async addresses(@common.Req() request: Request): Promise<Address[]> {
     const args = plainToClass(AddressFindManyArgs, request.query);
-    return this.service.findMany({
+    return this.service.addresses({
       ...args,
       select: {
         address_1: true,
@@ -106,10 +107,10 @@ export class AddressControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async findOne(
+  async address(
     @common.Param() params: AddressWhereUniqueInput
   ): Promise<Address | null> {
-    const result = await this.service.findOne({
+    const result = await this.service.address({
       where: params,
       select: {
         address_1: true,
@@ -142,12 +143,12 @@ export class AddressControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async update(
+  async updateAddress(
     @common.Param() params: AddressWhereUniqueInput,
     @common.Body() data: AddressUpdateInput
   ): Promise<Address | null> {
     try {
-      return await this.service.update({
+      return await this.service.updateAddress({
         where: params,
         data: data,
         select: {
@@ -182,11 +183,11 @@ export class AddressControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async delete(
+  async deleteAddress(
     @common.Param() params: AddressWhereUniqueInput
   ): Promise<Address | null> {
     try {
-      return await this.service.delete({
+      return await this.service.deleteAddress({
         where: params,
         select: {
           address_1: true,
@@ -217,7 +218,7 @@ export class AddressControllerBase {
     action: "read",
     possession: "any",
   })
-  async findManyCustomers(
+  async findCustomers(
     @common.Req() request: Request,
     @common.Param() params: AddressWhereUniqueInput
   ): Promise<Customer[]> {
@@ -263,7 +264,7 @@ export class AddressControllerBase {
         connect: body,
       },
     };
-    await this.service.update({
+    await this.service.updateAddress({
       where: params,
       data,
       select: { id: true },
@@ -285,7 +286,7 @@ export class AddressControllerBase {
         set: body,
       },
     };
-    await this.service.update({
+    await this.service.updateAddress({
       where: params,
       data,
       select: { id: true },
@@ -307,7 +308,7 @@ export class AddressControllerBase {
         disconnect: body,
       },
     };
-    await this.service.update({
+    await this.service.updateAddress({
       where: params,
       data,
       select: { id: true },

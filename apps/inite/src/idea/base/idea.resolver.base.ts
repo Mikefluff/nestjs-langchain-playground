@@ -10,7 +10,7 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import * as graphql from "@nestjs/graphql";
-import * as apollo from "apollo-server-express";
+import { GraphQLError } from "graphql";
 import { isRecordNotFoundError } from "../../prisma.util";
 import { MetaQueryPayload } from "../../util/MetaQueryPayload";
 import * as nestAccessControl from "nest-access-control";
@@ -19,13 +19,13 @@ import { GqlDefaultAuthGuard } from "../../auth/gqlDefaultAuth.guard";
 import * as common from "@nestjs/common";
 import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
-import { CreateIdeaArgs } from "./CreateIdeaArgs";
-import { UpdateIdeaArgs } from "./UpdateIdeaArgs";
-import { DeleteIdeaArgs } from "./DeleteIdeaArgs";
+import { Idea } from "./Idea";
 import { IdeaCountArgs } from "./IdeaCountArgs";
 import { IdeaFindManyArgs } from "./IdeaFindManyArgs";
 import { IdeaFindUniqueArgs } from "./IdeaFindUniqueArgs";
-import { Idea } from "./Idea";
+import { CreateIdeaArgs } from "./CreateIdeaArgs";
+import { UpdateIdeaArgs } from "./UpdateIdeaArgs";
+import { DeleteIdeaArgs } from "./DeleteIdeaArgs";
 import { IdeaService } from "../idea.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => Idea)
@@ -58,7 +58,7 @@ export class IdeaResolverBase {
     possession: "any",
   })
   async ideas(@graphql.Args() args: IdeaFindManyArgs): Promise<Idea[]> {
-    return this.service.findMany(args);
+    return this.service.ideas(args);
   }
 
   @common.UseInterceptors(AclFilterResponseInterceptor)
@@ -69,7 +69,7 @@ export class IdeaResolverBase {
     possession: "own",
   })
   async idea(@graphql.Args() args: IdeaFindUniqueArgs): Promise<Idea | null> {
-    const result = await this.service.findOne(args);
+    const result = await this.service.idea(args);
     if (result === null) {
       return null;
     }
@@ -84,7 +84,7 @@ export class IdeaResolverBase {
     possession: "any",
   })
   async createIdea(@graphql.Args() args: CreateIdeaArgs): Promise<Idea> {
-    return await this.service.create({
+    return await this.service.createIdea({
       ...args,
       data: args.data,
     });
@@ -99,13 +99,13 @@ export class IdeaResolverBase {
   })
   async updateIdea(@graphql.Args() args: UpdateIdeaArgs): Promise<Idea | null> {
     try {
-      return await this.service.update({
+      return await this.service.updateIdea({
         ...args,
         data: args.data,
       });
     } catch (error) {
       if (isRecordNotFoundError(error)) {
-        throw new apollo.ApolloError(
+        throw new GraphQLError(
           `No resource was found for ${JSON.stringify(args.where)}`
         );
       }
@@ -121,10 +121,10 @@ export class IdeaResolverBase {
   })
   async deleteIdea(@graphql.Args() args: DeleteIdeaArgs): Promise<Idea | null> {
     try {
-      return await this.service.delete(args);
+      return await this.service.deleteIdea(args);
     } catch (error) {
       if (isRecordNotFoundError(error)) {
-        throw new apollo.ApolloError(
+        throw new GraphQLError(
           `No resource was found for ${JSON.stringify(args.where)}`
         );
       }

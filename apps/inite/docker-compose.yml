@@ -14,6 +14,7 @@ services:
       DB_URL: mongodb://${DB_USER}:${DB_PASSWORD}@db:27017/${DB_NAME}?authSource=admin
     depends_on:
       - migrate
+    restart: on-failure
   migrate:
     build:
       context: .
@@ -27,13 +28,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-  nats:
-    image: nats:2.9.15
-    networks:
-      - internal
-    ports:
-      - 4222:4222
-      - 8222:8222
   db:
     image: mongo
     ports:
@@ -60,9 +54,16 @@ services:
       timeout: 10s
     volumes:
       - mongo:/var/lib/mongosql/data
+  nats:
+    image: nats:2.9.15
+    networks:
+      - internal
+    ports:
+      - 4222:4222
+      - 8222:8222
+volumes:
+  mongo: ~
 networks:
   internal:
     name: internal
     driver: bridge
-volumes:
-  mongo: ~

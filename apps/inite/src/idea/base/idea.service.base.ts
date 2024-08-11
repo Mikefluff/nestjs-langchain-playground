@@ -10,40 +10,28 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
-import { Prisma, Idea } from "@prisma/client";
+import { Prisma, Idea as PrismaIdea } from "@prisma/client";
 
 export class IdeaServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
 
-  async count<T extends Prisma.IdeaCountArgs>(
-    args: Prisma.SelectSubset<T, Prisma.IdeaCountArgs>
-  ): Promise<number> {
+  async count(args: Omit<Prisma.IdeaCountArgs, "select">): Promise<number> {
     return this.prisma.idea.count(args);
   }
 
-  async findMany<T extends Prisma.IdeaFindManyArgs>(
-    args: Prisma.SelectSubset<T, Prisma.IdeaFindManyArgs>
-  ): Promise<Idea[]> {
+  async ideas(args: Prisma.IdeaFindManyArgs): Promise<PrismaIdea[]> {
     return this.prisma.idea.findMany(args);
   }
-  async findOne<T extends Prisma.IdeaFindUniqueArgs>(
-    args: Prisma.SelectSubset<T, Prisma.IdeaFindUniqueArgs>
-  ): Promise<Idea | null> {
+  async idea(args: Prisma.IdeaFindUniqueArgs): Promise<PrismaIdea | null> {
     return this.prisma.idea.findUnique(args);
   }
-  async create<T extends Prisma.IdeaCreateArgs>(
-    args: Prisma.SelectSubset<T, Prisma.IdeaCreateArgs>
-  ): Promise<Idea> {
-    return this.prisma.idea.create<T>(args);
+  async createIdea(args: Prisma.IdeaCreateArgs): Promise<PrismaIdea> {
+    return this.prisma.idea.create(args);
   }
-  async update<T extends Prisma.IdeaUpdateArgs>(
-    args: Prisma.SelectSubset<T, Prisma.IdeaUpdateArgs>
-  ): Promise<Idea> {
-    return this.prisma.idea.update<T>(args);
+  async updateIdea(args: Prisma.IdeaUpdateArgs): Promise<PrismaIdea> {
+    return this.prisma.idea.update(args);
   }
-  async delete<T extends Prisma.IdeaDeleteArgs>(
-    args: Prisma.SelectSubset<T, Prisma.IdeaDeleteArgs>
-  ): Promise<Idea> {
+  async deleteIdea(args: Prisma.IdeaDeleteArgs): Promise<PrismaIdea> {
     return this.prisma.idea.delete(args);
   }
 }
