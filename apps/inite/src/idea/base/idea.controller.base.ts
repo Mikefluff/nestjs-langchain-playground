@@ -22,11 +22,10 @@ import { IdeaService } from "../idea.service";
 import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { IdeaCreateInput } from "./IdeaCreateInput";
-import { IdeaWhereInput } from "./IdeaWhereInput";
-import { IdeaWhereUniqueInput } from "./IdeaWhereUniqueInput";
-import { IdeaFindManyArgs } from "./IdeaFindManyArgs";
-import { IdeaUpdateInput } from "./IdeaUpdateInput";
 import { Idea } from "./Idea";
+import { IdeaFindManyArgs } from "./IdeaFindManyArgs";
+import { IdeaWhereUniqueInput } from "./IdeaWhereUniqueInput";
+import { IdeaUpdateInput } from "./IdeaUpdateInput";
 
 @swagger.ApiBearerAuth()
 @common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
@@ -46,8 +45,8 @@ export class IdeaControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async create(@common.Body() data: IdeaCreateInput): Promise<Idea> {
-    return await this.service.create({
+  async createIdea(@common.Body() data: IdeaCreateInput): Promise<Idea> {
+    return await this.service.createIdea({
       data: data,
       select: {
         createdAt: true,
@@ -71,9 +70,9 @@ export class IdeaControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async findMany(@common.Req() request: Request): Promise<Idea[]> {
+  async ideas(@common.Req() request: Request): Promise<Idea[]> {
     const args = plainToClass(IdeaFindManyArgs, request.query);
-    return this.service.findMany({
+    return this.service.ideas({
       ...args,
       select: {
         createdAt: true,
@@ -97,10 +96,10 @@ export class IdeaControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async findOne(
+  async idea(
     @common.Param() params: IdeaWhereUniqueInput
   ): Promise<Idea | null> {
-    const result = await this.service.findOne({
+    const result = await this.service.idea({
       where: params,
       select: {
         createdAt: true,
@@ -130,12 +129,12 @@ export class IdeaControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async update(
+  async updateIdea(
     @common.Param() params: IdeaWhereUniqueInput,
     @common.Body() data: IdeaUpdateInput
   ): Promise<Idea | null> {
     try {
-      return await this.service.update({
+      return await this.service.updateIdea({
         where: params,
         data: data,
         select: {
@@ -167,11 +166,11 @@ export class IdeaControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async delete(
+  async deleteIdea(
     @common.Param() params: IdeaWhereUniqueInput
   ): Promise<Idea | null> {
     try {
-      return await this.service.delete({
+      return await this.service.deleteIdea({
         where: params,
         select: {
           createdAt: true,

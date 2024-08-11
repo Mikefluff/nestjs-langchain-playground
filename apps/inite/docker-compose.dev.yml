@@ -26,5 +26,16 @@ services:
       timeout: 10s
     volumes:
       - mongo:/var/lib/mongosql/data
+  nats:
+    image: nats:2.9.15
+    networks:
+      - internal
+    ports:
+      - 4222:4222
+      - 8222:8222
 volumes:
   mongo: ~
+networks:
+  internal:
+    name: internal
+    driver: bridge

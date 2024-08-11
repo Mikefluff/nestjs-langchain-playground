@@ -22,11 +22,10 @@ import { OrderService } from "../order.service";
 import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { OrderCreateInput } from "./OrderCreateInput";
-import { OrderWhereInput } from "./OrderWhereInput";
-import { OrderWhereUniqueInput } from "./OrderWhereUniqueInput";
-import { OrderFindManyArgs } from "./OrderFindManyArgs";
-import { OrderUpdateInput } from "./OrderUpdateInput";
 import { Order } from "./Order";
+import { OrderFindManyArgs } from "./OrderFindManyArgs";
+import { OrderWhereUniqueInput } from "./OrderWhereUniqueInput";
+import { OrderUpdateInput } from "./OrderUpdateInput";
 
 @swagger.ApiBearerAuth()
 @common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
@@ -46,8 +45,8 @@ export class OrderControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async create(@common.Body() data: OrderCreateInput): Promise<Order> {
-    return await this.service.create({
+  async createOrder(@common.Body() data: OrderCreateInput): Promise<Order> {
+    return await this.service.createOrder({
       data: {
         ...data,
 
@@ -100,9 +99,9 @@ export class OrderControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async findMany(@common.Req() request: Request): Promise<Order[]> {
+  async orders(@common.Req() request: Request): Promise<Order[]> {
     const args = plainToClass(OrderFindManyArgs, request.query);
-    return this.service.findMany({
+    return this.service.orders({
       ...args,
       select: {
         createdAt: true,
@@ -141,10 +140,10 @@ export class OrderControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async findOne(
+  async order(
     @common.Param() params: OrderWhereUniqueInput
   ): Promise<Order | null> {
-    const result = await this.service.findOne({
+    const result = await this.service.order({
       where: params,
       select: {
         createdAt: true,
@@ -189,12 +188,12 @@ export class OrderControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async update(
+  async updateOrder(
     @common.Param() params: OrderWhereUniqueInput,
     @common.Body() data: OrderUpdateInput
   ): Promise<Order | null> {
     try {
-      return await this.service.update({
+      return await this.service.updateOrder({
         where: params,
         data: {
           ...data,
@@ -255,11 +254,11 @@ export class OrderControllerBase {
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
-  async delete(
+  async deleteOrder(
     @common.Param() params: OrderWhereUniqueInput
   ): Promise<Order | null> {
     try {
-      return await this.service.delete({
+      return await this.service.deleteOrder({
         where: params,
         select: {
           createdAt: true,
